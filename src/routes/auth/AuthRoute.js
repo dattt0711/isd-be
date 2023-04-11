@@ -9,7 +9,7 @@ const {
 // authRouter.use(async (req, res, next) => {
 //     await verifyToken(req, res, next);
 // });
-// require('./usersRoute')(authRouter);
+require('./ProductsRoute')(authRouter);
 // require('./PostRoute')(authRouter);
 // require('./PlayerRoute')(authRouter);
 // require('./StadiumRoute')(authRouter);

@@ -11,8 +11,12 @@ function ImageRoute(apiRouter) {
     if (request.file === undefined) {
       return response.send('Invalid request!');
     } else {
-      const imgUrl = `https://ffvn.herokuapp.com/file/image/${request.file.filename}`;
-      return response.send({url: imgUrl});
+      const imgUrl = `http://localhost:5000/file/image/${request.file.filename}`;
+      
+      return response.send({
+        success: true,
+        data: imgUrl
+      });
     }
   });
   apiRouter.get("/file/image/:filename", async (request, response) => {
