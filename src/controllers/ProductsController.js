@@ -24,23 +24,19 @@ module.exports.AUTH = {
     //         return res.json(responseError(40004,err));
     //     }
     // },
-    // list: async (req,res) => {
-    //     try {
-    //         const errors = await validateResult(listValidator, req);
-    //         if (!isEmpty(errors)) {
-    //             return res.json(responseError(40003, errors));
-    //         }
-    //        const result = await postsService.list({
-    //         ...req.query,
-    //        })      
-    //        if(!isEmpty(result)) {
-    //         return res.json(responseSuccess(10203, result));
-    //     }
-    //     return res.json(responseSuccess(10203, []));
-    //     } catch(err){
-    //         return res.json(responseError(40004,err));
-    //     }
-    // },
+    list: async (req,res) => {
+        try {
+           const result = await ProductsService.list({
+            ...req.query,
+           })      
+           if(!isEmpty(result)) {
+            return res.json(responseSuccess(10203, result));
+        }
+        return res.json(responseSuccess(10203, []));
+        } catch(err){
+            return res.json(responseError(40004,err));
+        }
+    },
     // listTags: async (req,res) => {
     //     try {
     //         const listPosts = await postsService.findByConditions({

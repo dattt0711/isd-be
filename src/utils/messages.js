@@ -3,12 +3,12 @@ exports.CODES_SUCCESS = {
     10001: 'Login successfully!',
 
     
-    /* 10200 -> 10209 posts */
-    10200: 'Create a new post successfully!',
-    10201: 'Update a post successfully!',
-    10202: 'Delete a post successfully!',
-    10203: 'List posts successfully!',
-    10204: 'View detail post successfully!',
+    /* 10200 -> 10209 products */
+    10200: 'Create a new product successfully!',
+    10201: 'Update a product successfully!',
+    10202: 'Delete a product successfully!',
+    10203: 'List product successfully!',
+    10204: 'View detail product successfully!',
     10205: 'All tags successfully!',
 
 

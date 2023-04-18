@@ -33,7 +33,6 @@ const list = async (data) => {
         };
         const fields = '-order -isDeleted';
         const populate = [
-            populateModel('userObjId','-password -expiresDate'),
         ];
         const options = {
             sort: {
