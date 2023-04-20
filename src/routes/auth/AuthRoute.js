@@ -10,6 +10,7 @@ const {
 //     await verifyToken(req, res, next);
 // });
 require('./ProductsRoute')(authRouter);
+require('./CartsRoute')(authRouter);
 // require('./PostRoute')(authRouter);
 // require('./PlayerRoute')(authRouter);
 // require('./StadiumRoute')(authRouter);

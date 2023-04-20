@@ -1,5 +1,5 @@
 const {
-    products: ProductsModels,
+    carts: CartsModels,
 } = require('../models/utils/connectToModels');
 const {
     promiseResolve, generatorTime, convertToObjectId, promiseReject,
@@ -17,13 +17,13 @@ const list = async (data) => {
         const conditions = {
             isDeleted: IS_DELETED[200],
         };
-        if (search) {
-            const regex = regExpSearch(search);
-            conditions.productName = regex;
-        }
-        if (category && category !== 'All') {
-            conditions.category = category;
-        }
+        // if (search) {
+        //     const regex = regExpSearch(search);
+        //     conditions.productName = regex;
+        // }
+        // if (category && category !== 'All') {
+        //     conditions.category = category;
+        // }
         const myCustomLabels = {
             totalDocs: 'itemCount',
             docs: 'items',
@@ -37,6 +37,8 @@ const list = async (data) => {
         };
         const fields = '-order -isDeleted';
         const populate = [
+            populateModel('productObjIds.productObjId'),
+            populateModel('userObjId', '-password'),
         ];
         const options = {
             sort: {
@@ -49,7 +51,7 @@ const list = async (data) => {
             select: fields,
             customLabels: myCustomLabels,
         };
-        const result = ProductsModels.paginate(conditions, options);
+        const result = CartsModels.paginate(conditions, options);
         return promiseResolve(result);
     } catch (err) {
         return promiseReject(err);
@@ -58,13 +60,11 @@ const list = async (data) => {
 const create = async (data) => {
     try {
         const set = {};
-        set.productName = data.productName;
-        set.category = data.category;
-        set.description = data.description;
-        set.price = data.price;
-        set.image = data.image;
+        set.userObjId = convertToObjectId(data.userObjId);
+        set.productObjIds = data.productObjIds;
         set.isDeleted = IS_DELETED[200];
-        const result = await ProductsModels.create(set);
+        console.log(set, 'set')
+        const result = await CartsModels.create(set);
         return promiseResolve(result);
     } catch (err) {
         return promiseReject(err);
@@ -89,7 +89,7 @@ const update = async (data) => {
         if (data?.thumbnail) {
             set.thumbnail = data.thumbnail;
         }
-        const result = await ProductsModels.findOneAndUpdate(conditions, set, { new: true });
+        const result = await CartsModels.findOneAndUpdate(conditions, set, { new: true });
         return promiseResolve(result);
     } catch (err) {
         console.log(err, 'err');
@@ -110,10 +110,10 @@ const findByConditions = async (data) => {
             populateModel('userObjId', '-password -expiresDate'),
         ];
         if (data?.getAll) {
-            const result = await ProductsModels.find(conditions).populate(populate);
+            const result = await CartsModels.find(conditions).populate(populate);
             return promiseResolve(result);
         }
-        const result = await ProductsModels.findOne(conditions).populate(populate);
+        const result = await CartsModels.findOne(conditions).populate(populate);
         return promiseResolve(result);
     } catch (err) {
         console.log(err, 'err')
@@ -132,7 +132,7 @@ const deleteConditions = async (data) => {
         const set = {
             isDeleted: IS_DELETED[300],
         };
-        const result = await ProductsModels.updateMany(conditions, set);
+        const result = await CartsModels.updateMany(conditions, set);
         return promiseResolve(result);
     } catch (err) {
         return promiseReject(err);
@@ -150,7 +150,7 @@ const updateDelete = async (data) => {
         const set = {
             isDeleted: IS_DELETED[300],
         };
-        const result = await ProductsModels.findOneAndUpdate(conditions, set, { new: true });
+        const result = await CartsModels.findOneAndUpdate(conditions, set, { new: true });
         return promiseResolve(result);
     } catch (err) {
         return promiseReject(err);
