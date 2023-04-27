@@ -99,15 +99,12 @@ const update = async (data) => {
 const findByConditions = async (data) => {
     try {
         const conditions = {};
-        if (data?.postId) {
-            conditions._id = convertToObjectId(data.postId);
-        }
-        if (!isEmpty(data?.userObjId)) {
-            conditions.userObjId = { $in: convertToArrayObjectId(data.userObjId) };
+        if (data?.productObjId) {
+            conditions._id = convertToObjectId(data.productObjId);
         }
         conditions.isDeleted = IS_DELETED[200];
         const populate = [
-            populateModel('userObjId', '-password -expiresDate'),
+            // populateModel('userObjId', '-password -expiresDate'),
         ];
         if (data?.getAll) {
             const result = await ProductsModels.find(conditions).populate(populate);
