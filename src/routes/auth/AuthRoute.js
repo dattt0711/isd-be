@@ -11,6 +11,7 @@ const {
 // });
 require('./ProductsRoute')(authRouter);
 require('./CartsRoute')(authRouter);
+require('./OrdersRoute')(authRouter);
 // require('./PostRoute')(authRouter);
 // require('./PlayerRoute')(authRouter);
 // require('./StadiumRoute')(authRouter);

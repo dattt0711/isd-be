@@ -4,8 +4,9 @@ const {
 } = require('../../utils/common');
 function CartsRoute(apiRouter) {
     // Create a new product
-    apiRouter.route('/carts/create').post(cartsController.create);
+    apiRouter.route('/carts/addToCart').post(cartsController.addToCart);
     apiRouter.route('/carts/list').get(cartsController.list);
+    apiRouter.route('/carts/delete').delete(cartsController.delete);
 
 }
 module.exports = CartsRoute;

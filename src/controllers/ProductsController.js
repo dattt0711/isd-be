@@ -83,7 +83,7 @@ module.exports.AUTH = {
         } catch (err) {
             return res.json(responseError(40004, err));
         }
-    }
+    },
     // update: async (req,res) => {
     //     try {
     //         const errors = await validateResult(updateValidator, req);
@@ -112,28 +112,24 @@ module.exports.AUTH = {
     //         return res.json(responseError(40004,err));
     //     }
     // },
-    // delete: async (req,res) => {
-    //     try {
-    //         const errors = await validateResult(deleteValidator, req);
-    //         if (!isEmpty(errors)) {
-    //             return res.json(responseError(40003, errors));
-    //         }
-    //         const {postId} = req.body;
-    //         const findPost = await postsService.findByConditions({
-    //             postId,
-    //         })
-    //         if(isEmpty(findPost)) {
-    //             return res.json(responseError(40103, []));
-    //         }
-    //         const result = await postsService.updateDelete({
-    //             postId,
-    //         })
-    //         if(!isEmpty(result)) {
-    //             return res.json(responseSuccess(10202, result));
-    //         }
-    //         return res.json(responseError(40102, []));
-    //     } catch (err) {
-    //         return res.json(responseError(40004,err));
-    //     }
-    // }
+    delete: async (req, res) => {
+        try {
+            const { productObjId } = req.body;
+            const findProduct = await ProductsService.findByConditions({
+                productObjId,
+            })
+            if (isEmpty(findProduct)) {
+                return res.json(responseError(40103, []));
+            }
+            const result = await ProductsService.updateDelete({
+                productObjId,
+            })
+            if (!isEmpty(result)) {
+                return res.json(responseSuccess(10202, result));
+            }
+            return res.json(responseError(40102, []));
+        } catch (err) {
+            return res.json(responseError(40004, err));
+        }
+    }
 }

@@ -7,7 +7,7 @@ const ObjectId = mongoose.Types.ObjectId;
 const mongoosePaginate = require('mongoose-paginate-v2');
 const cartsBase = {
     userObjId: {
-        type: ObjectId, trim: true, ref: 'users'
+        type: ObjectId, trim: true, ref: 'users', unique: true,
     },
     productObjIds: [{
         productObjId: { type: ObjectId, trim: true, ref: "products" },

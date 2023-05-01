@@ -11,7 +11,7 @@ const list = async (data) => {
         const search = data.search ? data.search : '';
         const category = data.category ? data.category : '';
         const page = data.page ? data.page : DEFAULT_PAGE;
-        const limit = 9;
+        const limit = 100;
         const sortKey = data.sortKey ? data.sortKey : 'title';
         const sortOrder = data.sortOrder ? data.sortOrder : 1;
         const conditions = {
@@ -75,19 +75,13 @@ const update = async (data) => {
         const set = {};
         const conditions = {
             isDeleted: IS_DELETED[200],
-            _id: convertToObjectId(data.postId),
         };
-        if (data?.title) {
-            set.title = data.title;
+
+        if (data?.userObjId) {
+            conditions.userObjId = convertToObjectId(data.userObjId);
         }
-        if (data?.content) {
-            set.content = data.content;
-        }
-        if (data?.tags) {
-            set.tags = data.tags;
-        }
-        if (data?.thumbnail) {
-            set.thumbnail = data.thumbnail;
+        if (data?.productObjIds) {
+            set.productObjIds = data.productObjIds;
         }
         const result = await CartsModels.findOneAndUpdate(conditions, set, { new: true });
         return promiseResolve(result);
@@ -99,21 +93,18 @@ const update = async (data) => {
 const findByConditions = async (data) => {
     try {
         const conditions = {};
-        if (data?.postId) {
-            conditions._id = convertToObjectId(data.postId);
-        }
         if (!isEmpty(data?.userObjId)) {
-            conditions.userObjId = { $in: convertToArrayObjectId(data.userObjId) };
+            conditions.userObjId = convertToObjectId(data.userObjId);
         }
         conditions.isDeleted = IS_DELETED[200];
         const populate = [
-            populateModel('userObjId', '-password -expiresDate'),
+            // populateModel('userObjId', '-password -expiresDate'),
         ];
         if (data?.getAll) {
             const result = await CartsModels.find(conditions).populate(populate);
             return promiseResolve(result);
         }
-        const result = await CartsModels.findOne(conditions).populate(populate);
+        const result = await CartsModels.findOne(conditions).populate(populate).lean();
         return promiseResolve(result);
     } catch (err) {
         console.log(err, 'err')

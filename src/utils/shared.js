@@ -1,12 +1,12 @@
 const sanitize = require('mongo-sanitize');
-const {check, validationResult} = require('express-validator');
+const { check, validationResult } = require('express-validator');
 const moment = require('moment-timezone');
 const generatorTime = () => moment().format('YYYY-MM-DD HH:mm:ss');
 const empty = require('is-empty');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
-const {CODES_SUCCESS, CODES_ERROR} = require('./messages');
-const {IS_DELETED} = require('./constants');
+const { CODES_SUCCESS, CODES_ERROR } = require('./messages');
+const { IS_DELETED } = require('./constants');
 const validateResult = async (validateFunc, req) => {
     if (Array.isArray(validateFunc)) {
         await Promise.all(validateFunc.map((validation) => validation.run(req)));
@@ -76,7 +76,7 @@ const populateModel = (path, select = {}, match = {}, option = {}) => {
         match: { isDeleted: IS_DELETED[200], ...match },
     };
     if (!isEmpty(option)) {
-        populate.options = {...option };
+        populate.options = { ...option };
     }
     return populate;
 };
@@ -95,8 +95,12 @@ const validateObjectId = (field, required = false) => {
             .withMessage(`${field} must is ObjectId`);
     }
     return check([field])
-        .optional({ nullable: true}).isMongoId().withMessage(`${field} must is ObjectId or null`);
+        .optional({ nullable: true }).isMongoId().withMessage(`${field} must is ObjectId or null`);
 };
+const includeInArrString = (arr, item) => {
+    const tempArr = arr.map((ar) => ar.toString());
+    return tempArr.includes(item.toString());
+}
 module.exports = {
     generatorTime,
     responseSuccess,
@@ -112,5 +116,6 @@ module.exports = {
     validateObjectId,
     validateResult,
     isValidDate,
+    includeInArrString,
 }
 

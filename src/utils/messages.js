@@ -12,14 +12,14 @@ exports.CODES_SUCCESS = {
   10205: 'All tags successfully!',
 
 
-  /* 10210 -> 10219 players */
-  10210: 'Create a new player successfully!',
+  /* 10210 -> 10219 carts */
+  10210: 'Add to cart successfully!',
   10211: 'Update a player successfully!',
-  10212: 'Delete a player successfully!',
+  10212: 'Delete a cart successfully!',
   10213: 'List players successfully!',
 
   /* 10220 -> 10229 players */
-  10220: 'Create a new stadium successfully!',
+  10220: 'Make a order successfully!',
   10221: 'Update a stadium successfully!',
   10222: 'Delete a stadium successfully!',
   10223: 'List stadiums successfully!',
@@ -42,15 +42,15 @@ exports.CODES_ERROR = {
   40102: 'Delete a product failure!',
   40103: 'This product is not found!',
 
-  /* 40110 -> 40119 players */
-  40110: 'Create a new player failure!',
+  /* 40110 -> 40119 carts */
+  40110: 'Add to cart failure!',
   40111: 'Update a player failure!',
-  40112: 'Delete a player failure!',
-  40113: 'This player is not found!',
+  40112: 'Delete a cart failure!',
+  40113: 'Cart is not found!',
 
-  /* 40120 -> 40129 players */
-  40120: 'Create a new stadium failure!',
-  40121: 'Update a stadium failure!',
+  /* 40120 -> 40129 orders */
+  40120: 'Make a order failure!',
+  40121: 'Making a order need at least one product!',
   40122: 'Delete a stadium failure!',
   40123: 'This stadium is not found!',
 

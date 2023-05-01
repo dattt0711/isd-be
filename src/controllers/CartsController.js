@@ -1,7 +1,7 @@
 const CartsService = require('../services/CartsService');
 const {
     isEmpty, responseSuccess, responseError,
-    validateResult,
+    validateResult, includeInArrString
 } = require('../utils/shared')
 // const {
 //     listValidator
@@ -52,22 +52,48 @@ module.exports.AUTH = {
     //         return res.json(responseError(40004,err));
     //     }
     // },
-    create: async (req, res) => {
+    addToCart: async (req, res) => {
         try {
             // const errors = await validateResult(createValidator, req);
             // if (!isEmpty(errors)) {
             //     return res.json(responseError(40003, errors));
             // }
             const { userObjId, productObjIds } = req.body;
-            const newCart = await CartsService.create({
+            let updatedCart = [];
+            const existedCart = await CartsService.findByConditions({
                 userObjId,
-                productObjIds,
             })
-            if (!isEmpty(newCart)) {
-                return res.json(responseSuccess(10200, newCart));
+            let result = [];
+            const productsInCart = existedCart?.productObjIds ? existedCart?.productObjIds : [];
+            if (isEmpty(existedCart)) {
+                result = await CartsService.create({
+                    userObjId,
+                    productObjIds,
+                })
+            } else {
+                for (let i = 0; i < productObjIds.length; i++) {
+                    const indexFindProduct = productsInCart.findIndex(e => e.productObjId.toString() ===
+                        productObjIds[i].productObjId.toString());
+                    if (indexFindProduct >= 0) {
+                        productsInCart[indexFindProduct] = {
+                            ...productsInCart[indexFindProduct],
+                            quantity: +productsInCart[indexFindProduct].quantity + +productObjIds[i].quantity,
+                        }
+                    } else {
+                        productsInCart.push(productObjIds[i]);
+                    }
+                }
+                result = await CartsService.update({
+                    userObjId,
+                    productObjIds: productsInCart,
+                })
             }
-            return res.json(responseError(40100, []));
+            if (!isEmpty(result)) {
+                return res.json(responseSuccess(10210, result));
+            }
+            return res.json(responseError(40110, []));
         } catch (err) {
+            console.log(err, 'err')
             return res.json(responseError(40004, err));
         }
     },
@@ -99,28 +125,26 @@ module.exports.AUTH = {
     //         return res.json(responseError(40004,err));
     //     }
     // },
-    // delete: async (req,res) => {
-    //     try {
-    //         const errors = await validateResult(deleteValidator, req);
-    //         if (!isEmpty(errors)) {
-    //             return res.json(responseError(40003, errors));
-    //         }
-    //         const {postId} = req.body;
-    //         const findPost = await postsService.findByConditions({
-    //             postId,
-    //         })
-    //         if(isEmpty(findPost)) {
-    //             return res.json(responseError(40103, []));
-    //         }
-    //         const result = await postsService.updateDelete({
-    //             postId,
-    //         })
-    //         if(!isEmpty(result)) {
-    //             return res.json(responseSuccess(10202, result));
-    //         }
-    //         return res.json(responseError(40102, []));
-    //     } catch (err) {
-    //         return res.json(responseError(40004,err));
-    //     }
-    // }
+    delete: async (req, res) => {
+        try {
+            const { userObjId, productObjId } = req.body;
+            const findCart = await CartsService.findByConditions({
+                userObjId,
+            })
+            if (isEmpty(findCart)) {
+                return res.json(responseError(40113, []));
+            }
+            const updateCart = findCart.productObjIds.filter(product => product.productObjId.toString() !== productObjId);
+            const result = await CartsService.update({
+                userObjId,
+                productObjIds: updateCart,
+            })
+            if (!isEmpty(result)) {
+                return res.json(responseSuccess(10212, result));
+            }
+            return res.json(responseError(40112, []));
+        } catch (err) {
+            return res.json(responseError(40004, err));
+        }
+    }
 }
