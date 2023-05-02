@@ -6,6 +6,7 @@ const UsersSchema = require('../Users');
 const ProductsSchema = require('../Products');
 const CartsSchema = require('../Carts');
 const OrdersSchema = require('../Orders');
+const CommentsSchema = require('../Comments');
 const models = {};
 
 module.exports = {
@@ -13,6 +14,7 @@ module.exports = {
     products: ProductsSchema,
     carts: CartsSchema,
     orders: OrdersSchema,
+    comments: CommentsSchema,
     connectToModels: ({ databaseName, currentModels = [], otherModels = [] }) => {
         const conn = connectDatabase(databaseName);
         otherModels.map((model) => {

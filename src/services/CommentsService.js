@@ -1,5 +1,5 @@
 const {
-    products: ProductsModels,
+    comments: CommentsModels,
 } = require('../models/utils/connectToModels');
 const {
     promiseResolve, generatorTime, convertToObjectId, promiseReject,
@@ -11,19 +11,19 @@ const list = async (data) => {
         const search = data.search ? data.search : '';
         const category = data.category ? data.category : '';
         const page = data.page ? data.page : DEFAULT_PAGE;
-        const limit = 9;
+        const limit = 100;
         const sortKey = data.sortKey ? data.sortKey : 'title';
         const sortOrder = data.sortOrder ? data.sortOrder : 1;
         const conditions = {
             isDeleted: IS_DELETED[200],
         };
-        if (search) {
-            const regex = regExpSearch(search);
-            conditions.productName = regex;
-        }
-        if (category && category !== 'All') {
-            conditions.category = category;
-        }
+        // if (search) {
+        //     const regex = regExpSearch(search);
+        //     conditions.productName = regex;
+        // }
+        // if (category && category !== 'All') {
+        //     conditions.category = category;
+        // }
         const myCustomLabels = {
             totalDocs: 'itemCount',
             docs: 'items',
@@ -37,6 +37,8 @@ const list = async (data) => {
         };
         const fields = '-order -isDeleted';
         const populate = [
+            populateModel('productObjIds.productObjId'),
+            populateModel('userObjId', '-password'),
         ];
         const options = {
             sort: {
@@ -49,7 +51,7 @@ const list = async (data) => {
             select: fields,
             customLabels: myCustomLabels,
         };
-        const result = ProductsModels.paginate(conditions, options);
+        const result = CommentsModels.paginate(conditions, options);
         return promiseResolve(result);
     } catch (err) {
         return promiseReject(err);
@@ -58,13 +60,11 @@ const list = async (data) => {
 const create = async (data) => {
     try {
         const set = {};
-        set.productName = data.productName;
-        set.category = data.category;
-        set.description = data.description;
-        set.price = data.price;
-        set.image = data.image;
+        set.userObjId = convertToObjectId(data.userObjId);
+        set.productObjId = convertToObjectId(data.productObjId);
+        set.review = data.review;
         set.isDeleted = IS_DELETED[200];
-        const result = await ProductsModels.create(set);
+        const result = await CommentsModels.create(set);
         return promiseResolve(result);
     } catch (err) {
         return promiseReject(err);
@@ -75,41 +75,37 @@ const update = async (data) => {
         const set = {};
         const conditions = {
             isDeleted: IS_DELETED[200],
-            _id: convertToObjectId(data.productObjId),
         };
-        if (data?.productName) {
-            set.productName = data.productName;
+
+        if (data?.userObjId) {
+            conditions.userObjId = convertToObjectId(data.userObjId);
         }
-        if (data?.category) {
-            set.category = data.category;
+        if (data?.productObjIds) {
+            set.productObjIds = data.productObjIds;
         }
-        if (data?.description) {
-            set.description = data.description;
-        }
-        if (data?.price) {
-            set.price = data.price;
-        }
-        const result = await ProductsModels.findOneAndUpdate(conditions, set, { new: true });
+        const result = await CommentsModels.findOneAndUpdate(conditions, set, { new: true });
         return promiseResolve(result);
     } catch (err) {
+        console.log(err, 'err');
         return promiseReject(err);
     }
 };
 const findByConditions = async (data) => {
     try {
         const conditions = {};
-        if (data?.productObjId) {
-            conditions._id = convertToObjectId(data.productObjId);
+        if (!isEmpty(data?.productObjId)) {
+            conditions.productObjId = convertToObjectId(data.productObjId);
         }
         conditions.isDeleted = IS_DELETED[200];
         const populate = [
-            // populateModel('userObjId', '-password -expiresDate'),
+            populateModel('userObjId', '-password -expiresDate'),
+            populateModel('productObjId'),
         ];
         if (data?.getAll) {
-            const result = await ProductsModels.find(conditions).populate(populate);
+            const result = await CommentsModels.find(conditions).populate(populate);
             return promiseResolve(result);
         }
-        const result = await ProductsModels.findOne(conditions).populate(populate);
+        const result = await CommentsModels.findOne(conditions).populate(populate).lean();
         return promiseResolve(result);
     } catch (err) {
         console.log(err, 'err')
@@ -128,7 +124,7 @@ const deleteConditions = async (data) => {
         const set = {
             isDeleted: IS_DELETED[300],
         };
-        const result = await ProductsModels.updateMany(conditions, set);
+        const result = await CommentsModels.updateMany(conditions, set);
         return promiseResolve(result);
     } catch (err) {
         return promiseReject(err);
@@ -137,13 +133,16 @@ const deleteConditions = async (data) => {
 const updateDelete = async (data) => {
     try {
         const conditions = {};
-        if (data?.productObjId) {
-            conditions._id = convertToObjectId(data.productObjId);
+        if (data?.postId) {
+            conditions._id = convertToObjectId(data.postId);
+        }
+        if (data?.userObjId) {
+            conditions.userObjId = convertToObjectId(data.userObjId);
         }
         const set = {
             isDeleted: IS_DELETED[300],
         };
-        const result = await ProductsModels.findOneAndUpdate(conditions, set, { new: true });
+        const result = await CommentsModels.findOneAndUpdate(conditions, set, { new: true });
         return promiseResolve(result);
     } catch (err) {
         return promiseReject(err);
