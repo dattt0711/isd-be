@@ -17,6 +17,9 @@ const list = async (data) => {
         const conditions = {
             isDeleted: IS_DELETED[200],
         };
+        if (data?.userObjId) {
+            conditions.userObjId = convertToObjectId(data?.userObjId)
+        }
         // if (search) {
         //     const regex = regExpSearch(search);
         //     conditions.productName = regex;
