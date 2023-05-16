@@ -21,6 +21,18 @@ const productsBase = {
     image: {
         type: String, trim: true,
     },
+    details: {
+        type: String, trim: true,
+    },
+    subImage1: {
+        type: String, trim: true,
+    },
+    subImage2: {
+        type: String, trim: true,
+    },
+    subImage3: {
+        type: String, trim: true,
+    },
 }
 const products = { ...productsBase, ...common };
 const productsSchema = new Schema(products, { versionKey: false });

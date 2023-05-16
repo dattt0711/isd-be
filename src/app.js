@@ -6,37 +6,26 @@ const express = require('express');
 const path = require('path');
 // const {config} = require('./configs/configEnvSchema');
 
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const app = express();
 const http = require('http');
+const mongoose = require('mongoose');
 /**
  * Create HTTP server.
  */
 const server = http.createServer(app);
 
-/**
- * Normalize a port into a number, string, or false.
- */
 
-const normalizePort = (val) => {
-    const port = parseInt(val, 10);
-    if (Number.isNaN(port)) {
-        return val;
-    }
-
-    if (port >= 0) {
-        // port number
-        return port;
-    }
-
-    return false;
+const options = {
+    autoIndex: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 };
+const MONGODB_URI = `mongodb://localhost:27017/iws-beauty-final`;
+mongoose.connect(MONGODB_URI, options);
 
-const port = normalizePort(process.env.PORT || '5000');
 
-server.listen(port, () => {
-    console.log(`App is listening at ${port}`);
-});
-// const origin = config.ORIGIN.split(',');
 const corsOptions = {
     origin: '*',
     methods: ['OPTIONS', 'GET', 'PUT', 'POST', 'DELETE'],
@@ -60,10 +49,27 @@ app.get("/", async (request, response) => {
     response.send("Ok!")
 });
 
+
+
 app.use(express.static(path.join(__dirname, 'public')));
-require('./configs/database');
-require('./configs/configInit')(app);
-require('./configs/configRoutes')(app);
+
+app.use(bodyParser.json()); // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
+    extended: true,
+}));
+app.use(cookieParser());
 
 
+const productsRoute = require('./routes/ProductsRoute');
+const commentsRoute = require('./routes/CommentsRoute');
+const usersRoute = require('./routes/UsersRoute');
+
+app.use('/', usersRoute);
+app.use('/', productsRoute);
+app.use('/', commentsRoute);
+
+
+server.listen(5000, () => {
+    console.log(`App is listening at 5000`);
+});
 module.exports = app;

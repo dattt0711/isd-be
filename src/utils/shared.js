@@ -7,22 +7,6 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const { CODES_SUCCESS, CODES_ERROR } = require('./messages');
 const { IS_DELETED } = require('./constants');
-const validateResult = async (validateFunc, req) => {
-    if (Array.isArray(validateFunc)) {
-        await Promise.all(validateFunc.map((validation) => validation.run(req)));
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return errors.array();
-        }
-        return [];
-    }
-    await validateFunc.run(req);
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return errors.array();
-    }
-    return [];
-};
 const isValidDate = (date, formatDate = '') => {
     let isValidDate = false;
     if (formatDate !== '') {
@@ -32,25 +16,17 @@ const isValidDate = (date, formatDate = '') => {
     }
     return isValidDate;
 };
-const responseError = (statusCode, errors = {}) => {
+const responseError = (message, errors = {}) => {
     const response = {};
     response.success = false;
-    response.statusCode = statusCode;
-    response.message = CODES_ERROR[statusCode];
-    let message = '';
-    if (!empty(errors)) {
-        message = errors[0] && errors[0].msg ? errors[0].msg : CODES_ERROR[statusCode];
-        message = errors.message ? errors.message : CODES_ERROR[statusCode];
-        response.message = message;
-        response.errors = errors;
-    }
+    response.message = message;
+
     return response;
 };
-const responseSuccess = (statusCode, result = {}) => {
+const responseSuccess = (message, result = {}) => {
     const response = {
         success: true,
-        statusCode: statusCode,
-        message: CODES_SUCCESS[statusCode],
+        message,
     };
     if (result) {
         response.data = result;
@@ -114,7 +90,6 @@ module.exports = {
     escapeRegExp,
     regExpSearch,
     validateObjectId,
-    validateResult,
     isValidDate,
     includeInArrString,
 }
