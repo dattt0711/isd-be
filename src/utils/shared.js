@@ -7,7 +7,6 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const { CODES_SUCCESS, CODES_ERROR } = require('./messages');
 const { IS_DELETED } = require('./constants');
-
 const isValidDate = (date, formatDate = '') => {
     let isValidDate = false;
     if (formatDate !== '') {
@@ -74,6 +73,10 @@ const validateObjectId = (field, required = false) => {
     return check([field])
         .optional({ nullable: true }).isMongoId().withMessage(`${field} must is ObjectId or null`);
 };
+const includeInArrString = (arr, item) => {
+    const tempArr = arr.map((ar) => ar.toString());
+    return tempArr.includes(item.toString());
+}
 module.exports = {
     generatorTime,
     responseSuccess,
@@ -88,5 +91,6 @@ module.exports = {
     regExpSearch,
     validateObjectId,
     isValidDate,
+    includeInArrString,
 }
 
