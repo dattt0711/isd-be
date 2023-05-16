@@ -6,7 +6,6 @@ const { common } = require('./Common');
 const ObjectId = mongoose.Types.ObjectId;
 const mongoosePaginate = require('mongoose-paginate-v2');
 const commentsBase = {
-<<<<<<< HEAD
     comment: {
         type: String, trim: true,
     },
@@ -18,13 +17,6 @@ const commentsBase = {
     },
     rating: {
         type: Number, trim: true,
-=======
-    review: {
-        type: String, trim: true,
-    },
-    userObjId: {
-        type: ObjectId, trim: true, ref: 'users'
->>>>>>> 490bf8a227a7e82d1ddc39f750872a6157ade5b9
     },
     productObjId: {
         type: ObjectId, trim: true, ref: 'products'

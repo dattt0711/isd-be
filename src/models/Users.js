@@ -27,28 +27,11 @@ const usersBase = {
     email: {
         type: String, trim: true
     },
-<<<<<<< HEAD
     wishList: [{
         type: ObjectId, trim: true, ref: 'products'
     }],
     isAdmin: {
         type: Boolean, default: false
-=======
-    fullName: {
-        type: String, trim: true,
-    },
-    sex: {
-        type: String, trim: true,
-    },
-    dob: {
-        type: String, trim: true,
-    },
-    address: {
-        type: String, trim: true,
-    },
-    isAdmin: {
-        type: Boolean, default: false,
->>>>>>> 490bf8a227a7e82d1ddc39f750872a6157ade5b9
     }
 }
 const users = { ...usersBase, ...common };
